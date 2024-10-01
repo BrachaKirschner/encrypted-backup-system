@@ -2,33 +2,40 @@
 #include <string>
 #include <filesystem>
 #include <boost/asio.hpp>
-#include <CryptoPP/cryptlib.h>
+#include <request_handler.h>
 
 using boost::asio::ip::tcp;
 
-int main()
+void initialize_connection(tcp::socket& socket, const std::string& address, const std::string& port)
 {
-    // get info from 'transfer.info'
-    std::string address = read_address("transfer.info");
-    std::string port = read_port("transfer.info");
-    std::string username = read_username("transfer.info");
-    std::filesystem::path path = read_path("transfer.info");
-
     boost::asio::io_context io_context;
-    tcp::socket socket(io_context);
     tcp::resolver resolver(io_context);
     boost::asio::connect(socket, resolver.resolve(address, port));
+}
 
-    if(std::filesystem::exists("me.info"))
+int main() 
+{
+    try
     {
-        register_user(socket, username);
-        extchange_keys(socket, username);
-        send_file(socket, path);
+        RequestHandler request_handler();
+        // handling the user login/registration
+        if(std::filesystem::exists("me.info"))
+        {
+            request_handler.login();
+        }
+        else
+        {
+            request_handler.register_user();
+            request_handler.exchange_keys();
+        }
+        // handling the file backup
+        request_handler.backup_file();
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
 
-    }
-    else
-    {
-        socket 
-    }
     return 0;
 }

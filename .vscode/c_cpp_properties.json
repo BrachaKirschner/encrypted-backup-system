@@ -4,8 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Boost/boost_1_86_0"
-
+                "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Boost/boost_1_86_0",
+                "C:/Users/brach/cryptopp"
             ],
             "defines": [
                 "_DEBUG",
