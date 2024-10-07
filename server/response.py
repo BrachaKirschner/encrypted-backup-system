@@ -17,3 +17,9 @@ class Code(enum.Enum):
     LOGIN_SUCCESSFUL = 1605
     LOGIN_FAILED = 1606
     GENERAL_ERROR = 1607
+
+class Size(enum.Enum):
+    CLIENT_ID_SIZE = 16
+    CONTENT_LENGTH_SIZE = 4
+    FILE_NAME_SIZE = 255
+    CHECKSUM_SIZE = 4

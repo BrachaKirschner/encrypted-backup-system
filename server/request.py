@@ -31,3 +31,4 @@ class Offset(enum.Enum):
     PACKET_NUMBER_OFFSET = ORIGINAL_FILE_SIZE_OFFSET.value + Size.ORIGINAL_FILE_LENGTH_SIZE.value
     TOTAL_PACKETS_OFFSET = PACKET_NUMBER_OFFSET.value + Size.PACKET_NUMBER_SIZE.value
     BACKUP_FILE_NAME_OFFSET = TOTAL_PACKETS_OFFSET.value + Size.TOTAL_PACKETS_SIZE.value # This offset will only be used for accessing the file name in the payload of the backup file request
+    MESSAGE_CONTENT_OFFSET = BACKUP_FILE_NAME_OFFSET.value + Size.FILE_NAME_SIZE.value
