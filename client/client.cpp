@@ -1,23 +1,13 @@
+#include "request_handler.h"
 #include <iostream>
 #include <string>
 #include <filesystem>
-#include <boost/asio.hpp>
-#include <request_handler.h>
-
-using boost::asio::ip::tcp;
-
-void initialize_connection(tcp::socket& socket, const std::string& address, const std::string& port)
-{
-    boost::asio::io_context io_context;
-    tcp::resolver resolver(io_context);
-    boost::asio::connect(socket, resolver.resolve(address, port));
-}
 
 int main() 
 {
     try
     {
-        RequestHandler request_handler();
+        RequestHandler request_handler;
         // handling the user login/registration
         if(std::filesystem::exists("me.info"))
         {

@@ -1,6 +1,7 @@
 #include "connection_handler.h"
 #include "request.h"
 #include "response.h"
+#include "file_utils.h"
 #include <boost/asio.hpp>
 #include <cstdint>
 #include <iostream>
@@ -9,9 +10,12 @@
 
 using boost::asio::ip::tcp;
 
-ConnectionHandler::ConnectionHandler(tcp::socket& socket)
-    : socket(std::move(socket))
+ConnectionHandler::ConnectionHandler()
 {
+    boost::asio::io_context io_context;
+    tcp::socket socket(io_context);
+    tcp::resolver resolver(io_context);
+    boost::asio::connect(socket, resolver.resolve(read_address(), read_port()));
 }
 
 ConnectionHandler::~ConnectionHandler()

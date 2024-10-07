@@ -1,19 +1,23 @@
 #include "request_handler.h"
 #include "request.h"
 #include "response.h"
+#include "file_utils.h"
 #include <boost/asio.hpp>
 #include <fstream>
 #include <iostream>
 
 #define NUM_OF_TRIES 3
 
-using boost::asio::ip::tcp;
-
-RequestHandler::RequestHandler(tcp::socket& socket)
-    : ConnectionHandler(SOCKET_SECURITY_PROTOCOL_INVALID)
+RequestHandler::RequestHandler()
+    : connection_handler()
 {
-    username = read_username();
-    filename = read_filename();
+    std::string user_n = read_username();
+    std::copy_n(user_n, NAME_SIZE, username);
+    username[user_n.size()] = '\0';
+
+    std::string file_n = read_filename();
+    std::copy_n(file_n, FILE_NAME_SIZE, filename);
+    filename[file_n.size()] = '\0';
 }
 
 void RequestHandler::register_user()
@@ -21,13 +25,13 @@ void RequestHandler::register_user()
     // handle the registration request
     Request_t request;
     request.code = REGISTER;
-    request.payload = username;
+    request.payload = std::vector<uint8_t>(username, username + NAME_SIZE);
     request.payload_size = request.payload.size();
 
     Response_t response = connection_handler.exchange_messages(request);
     if(response.code == REGISTERTION_SUCCESSFUL)
     {
-        client_id = response.payload;
+        std::copy(response.payload.begin(), response.payload.end(), client_id);
         write_client_id("me.info", request.payload);
         // do something with AES key
     }
@@ -37,6 +41,7 @@ void RequestHandler::login()
 {
     // handle the login request
     Request_t request;
+    std::copy_n(client_id, CLIENT_ID_SIZE, request.client_id);
     request.code = LOGIN;
     request.payload = std::vector<uint8_t>(username, username + NAME_SIZE);
     request.payload_size = request.payload.size();
@@ -57,7 +62,7 @@ void RequestHandler::exchange_keys()
 
 }
 
-void RequestHandler::backup()
+void RequestHandler::backup_file()
 {
     // open the file
     std::ifstream original_file(filename, std::ios::binary);
@@ -67,6 +72,11 @@ void RequestHandler::backup()
     }
 
     int cksum = compute_checksum(original_file); // compute the checksum
+
+    // reseting the file after computing the checksum to read it again from the beginning to encrypt it
+    original_file.clear();
+    original_file.seekg(0, std::ios::beg);
+
     std::ifstream encrypted_file = encrypt_file(original_file); // encrypt the file
     
     // declartion
@@ -75,14 +85,14 @@ void RequestHandler::backup()
     int num_of_tries;
 
     // perparing the file request
-    file_request.client_id = client_id;
+    std::copy_n(client_id, CLIENT_ID_SIZE, file_request.client_id);
     file_request.code = SEND_FILE;
     // GET THE PAYLOAD HERE: encrypted_file.size(), original_file.size(), packet_number, total_packets, filename, encrypted_file
     file_payload.size = file_request.payload.size();
 
     // perparing the crc request
-    crc_request.client_id = client_id;
-    crc_request.payload = filename;
+    std::copy_n(client_id, CLIENT_ID_SIZE, crc_request.client_id);
+    crc_request.payload = std::vector<uint8_t>(filename, filename + FILE_NAME_SIZE);
     crc_request.payload_size = crc_request.payload.size();
 
     // sending the file

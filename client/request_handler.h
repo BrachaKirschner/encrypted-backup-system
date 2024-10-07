@@ -7,19 +7,16 @@
 #include <cstdint>
 #include "connection_handler.h"
 
-using boost::asio::ip::tcp;
-
 class RequestHandler
 {
 public:
-    public:
-    RequestHandler(tcp::socket& socket);
+    RequestHandler();
     ~RequestHandler();
 
     void login();
     void register_user();
     void exchange_keys();
-    void backup();
+    void backup_file();
 private:
     ConnectionHandler connection_handler;
     uint8_t username[NAME_SIZE];

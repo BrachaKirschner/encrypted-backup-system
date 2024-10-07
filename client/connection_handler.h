@@ -5,8 +5,6 @@
 #include <request.h>
 #include <response.h>
 
-using boost::asio::ip::tcp;
-
 /**
 * Class to handle the TCP connection, sending/receiving messages based on the protocol.
 */
@@ -17,7 +15,7 @@ public:
     * Constructor.
     * @param socket the socket to handle the connection.
     */
-    ConnectionHandler(tcp::socket& socket);
+    ConnectionHandler();
 
     /**
     * Destructor.
