@@ -10,7 +10,7 @@ class Request:
         self.payload = payload
 
 class ClientSession:
-    def __init__(self, client_socket, client_address):
+    def __init__(self, client_socket):
         self.client_socket = client_socket
 
     def start(self):

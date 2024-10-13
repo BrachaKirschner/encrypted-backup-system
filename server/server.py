@@ -1,5 +1,16 @@
+import os
 import socket
 import threading
+
+from client_session import ClientSession
+
+def read_port():
+    if os.path.exists("port.info"):
+        with open("port.info", "r") as f:
+            return int(f.read())
+    else:
+        return 1256
+
 
 def handle_client(client_socket):
     with client_socket:

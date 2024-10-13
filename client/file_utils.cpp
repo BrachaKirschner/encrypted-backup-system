@@ -1,5 +1,6 @@
 #include "file_utils.h"
-#include "request.h"
+#include "protocol.h"
+#include "Base64Wrapper.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -101,4 +102,64 @@ std::string read_filename()
     }
     
     return filename;
+}
+
+std::string read_rsa_key()
+{
+    std::ifstream file("priv.key");
+    if(!file.is_open())
+    {
+        throw std::runtime_error("Fatal: could not open rsa_key.pem");
+    }
+    std::string rsa_key;
+    std::string line;
+    while(std::getline(file, line))
+    {
+        rsa_key += line + '\n';
+    }
+    file.close();
+
+    return rsa_key;
+}
+
+void write_username(std::string username)
+{
+    std::ofstream file("me.info");
+    if(!file.is_open())
+    {
+        throw std::runtime_error("Fatal: could not open me.info");
+    }
+    file << username << std::endl;
+    file.close();
+}
+
+void write_client_id(std::string client_id)
+{
+    std::ofstream file("me.info");
+    if(!file.is_open())
+    {
+        throw std::runtime_error("Fatal: could not open me.info");
+    }
+    file << client_id << std::endl;
+    file.close();
+}
+
+void write_rsa_private_key(std::string rsa_private_key)
+{
+    std::ofstream file1("me.info");
+    if(!file1.is_open())
+    {
+        throw std::runtime_error("Fatal: could not open rsa_key.pem");
+    }
+    Base64Wrapper base64_wrapper;
+    file1 << base64_wrapper.encode(rsa_private_key) << std::endl;
+    file1.close();
+
+    std::ofstream file2("priv.key");
+    if(!file2.is_open())
+    {
+        throw std::runtime_error("Fatal: could not open rsa_key.pem");
+    }
+    file2 << rsa_private_key;
+    file2.close();
 }

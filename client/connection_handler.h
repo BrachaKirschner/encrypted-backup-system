@@ -2,8 +2,9 @@
 #define CONNECTION_HANDLER_H
 
 #include <boost/asio.hpp>
-#include <request.h>
-#include <response.h>
+#include <protocol.h>
+
+using boost::asio::ip::tcp;
 
 /**
 * Class to handle the TCP connection, sending/receiving messages based on the protocol.
@@ -30,6 +31,7 @@ public:
     Response_t exchange_messages(const Request_t& request);
 
 private:
+    boost::asio::io_context io_context;
     tcp::socket socket;
 
     /**

@@ -1,6 +1,5 @@
 #include "connection_handler.h"
-#include "request.h"
-#include "response.h"
+#include "protocol.h"
 #include "file_utils.h"
 #include <boost/asio.hpp>
 #include <cstdint>
@@ -11,9 +10,8 @@
 using boost::asio::ip::tcp;
 
 ConnectionHandler::ConnectionHandler()
+    : socket(io_context)
 {
-    boost::asio::io_context io_context;
-    tcp::socket socket(io_context);
     tcp::resolver resolver(io_context);
     boost::asio::connect(socket, resolver.resolve(read_address(), read_port()));
 }
@@ -35,7 +33,8 @@ Response_t ConnectionHandler::exchange_messages(const Request_t& request)
         }
         if(i == NUM_OF_TRIES - 1)
         {
-            throw std::runtime_error("Fatal: message %d responded with error 3 times", request.code);
+            std::string error_message = "Fatal: message " + std::to_string(request.code) + " responded with error 3 times";
+            throw std::runtime_error(error_message);
         }
         std::cout << "Server responded with an error" << std::endl;
     }
