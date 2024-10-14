@@ -4,8 +4,7 @@ import uuid
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
-from request import Request, Size, Offset
-from response import Response, Code, Size
+from protocol import Request, Response, Size, Offset, Code
 from cksum import memcrc
 
 class RequestHandler:
