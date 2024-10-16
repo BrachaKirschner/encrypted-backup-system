@@ -445,17 +445,20 @@ uint_fast32_t const crctab[8][256] = {
 
 #define UNSIGNED(n) (n & 0xffffffff)
 
-unsigned long memcrc(char * b, size_t n) {
+unsigned long memcrc(char * b, size_t n)
+{
     unsigned int v = 0, c = 0;
     unsigned long s = 0;
     unsigned int tabidx;
     
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         tabidx = (s >> 24) ^ (unsigned char)b[i];
         s = UNSIGNED((s << 8)) ^ crctab[0][tabidx];
     }
     
-    while (n) {
+    while (n)
+    {
         c = n & 0377;
         n = n >> 8;
         s = UNSIGNED(s << 8) ^ crctab[0][(s >> 24) ^ c];
@@ -464,8 +467,10 @@ unsigned long memcrc(char * b, size_t n) {
 
 }
 
-std::string readfile(std::string fname) {
-    if (std::filesystem::exists(fname)) {
+std::string readfile(std::string fname)
+{
+    if (std::filesystem::exists(fname)) 
+    {
         std::filesystem::path fpath = fname;
         std::ifstream f1(fname.c_str(), std::ios::binary);
         
@@ -473,18 +478,19 @@ std::string readfile(std::string fname) {
         char* b = new char[size];
         f1.seekg(0, std::ios::beg);
         f1.read(b, size);
-        std::cout << "tellg returns" << f1.tellg() << std::endl;
         
         return std::to_string(memcrc(b, size)) + '\t' + std::to_string(size) + '\t' + fname;
     }
-    else {
+    else 
+    {
         std::cerr << "Cannot open input file " << fname << std::endl;
         return "";
     }
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
     std::cout << readfile(argv[1]) << std::endl;
     exit(0);
 }

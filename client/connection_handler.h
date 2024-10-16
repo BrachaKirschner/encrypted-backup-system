@@ -30,10 +30,6 @@ public:
      */
     Response_t exchange_messages(const Request_t& request);
 
-private:
-    boost::asio::io_context io_context;
-    tcp::socket socket;
-
     /**
     * Write a request to the server.
     * @param request the request to write.
@@ -45,6 +41,10 @@ private:
     * @return the response read.
     */
     Response_t read_response();
+
+private:
+    boost::asio::io_context io_context;
+    tcp::socket socket;
 };
 
 #endif //CONNECTION_HANDLER_H

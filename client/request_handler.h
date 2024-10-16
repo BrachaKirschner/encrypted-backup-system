@@ -21,12 +21,6 @@ public:
     void backup_file();
 private:
     ConnectionHandler connection_handler;
-    //uint8_t username[NAME_SIZE];
-    //uint8_t filename[FILE_NAME_SIZE];
-    //uint8_t client_id[CLIENT_ID_SIZE];
-    //uint8_t private_rsa_key[RSA_KEY_SIZE];
-    //uint8_t aes_key[AES_KEY_SIZE];
-
     std::string username;
     std::string filename;
     std::string client_id;
