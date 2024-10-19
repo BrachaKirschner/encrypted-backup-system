@@ -17,9 +17,9 @@ public:
 	/**
 	 * @brief The default key length in bytes
 	 *
-	 * @note The key length must be 16 bytes
+	 * @note The key length must be 32 bytes
 	 */
-	static const unsigned int DEFAULT_KEYLENGTH = 16;
+	static const unsigned int DEFAULT_KEYLENGTH = 32;
 
 private:
 	unsigned char _key[DEFAULT_KEYLENGTH];

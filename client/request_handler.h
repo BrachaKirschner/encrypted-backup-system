@@ -1,13 +1,7 @@
 #ifndef REQUEST_HANDLER_H
 #define REQUEST_HANDLER_H
 
-#include <boost/asio.hpp>
-#include <protocol.h>
-#include <filesystem>
-#include <cstdint>
 #include "connection_handler.h"
-#define AES_KEY_SIZE 32
-#define RSA_KEY_SIZE 128
 
 class RequestHandler
 {

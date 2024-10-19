@@ -11,17 +11,18 @@
 #define NUM_OF_TRIES 3
 #define RSA_KEY_BITS_SIZE 1024
 #define PACKET_SIZE 1024
+#define AES_KEY_SIZE 32
 
 RequestHandler::RequestHandler()
-    : connection_handler()
+	: connection_handler(), username(), filename(), client_id(), private_rsa_key(), aes_key()
 {
-    std::string user_n = read_username();
-    std::copy_n(user_n, NAME_SIZE, username);
-    username[user_n.size()] = '\0';
+    username = read_username() + '\0';
+    filename = read_filename();
+}
 
-    std::string file_n = read_filename();
-    std::copy_n(file_n, FILE_NAME_SIZE, filename);
-    filename[file_n.size()] = '\0';
+RequestHandler::~RequestHandler()
+{
+	// destructor
 }
 
 void RequestHandler::register_user()
@@ -34,7 +35,7 @@ void RequestHandler::register_user()
     Response_t response = connection_handler.exchange_messages(request);
     if (response.code == REGISTRATION_SUCCESSFUL)
     {
-        std::copy_n(response.payload, CLIENT_ID_SIZE, client_id);
+        client_id = response.read_from_payload(CLIENT_ID_OFFSET, CLIENT_ID_SIZE);
         write_username(username);
         write_client_id(client_id);
     }
@@ -52,7 +53,7 @@ void RequestHandler::login()
 {
     // handle the login request
     Request_t request;
-    std::copy_n(client_id, CLIENT_ID_SIZE, request.client_id);
+    request.assign_client_id(client_id);
     request.code = LOGIN;
     request.append_to_payload(username, NAME_SIZE);
 
@@ -60,7 +61,7 @@ void RequestHandler::login()
     if (response.code == LOGIN_SUCCESSFUL)
     {
         std::string rsa_key = read_rsa_key();
-        std::copy_n(response.payload.begin() + AES_KEY_OFFSET, AES_KEY_SIZE, aes_key);
+        aes_key = response.read_from_payload(AES_KEY_OFFSET, response.payload_size - AES_KEY_OFFSET);
         RSAPrivateWrapper rsa_private_wrapper = RSAPrivateWrapper(rsa_key);
         rsa_private_wrapper.decrypt(aes_key);
     }
@@ -84,15 +85,15 @@ void RequestHandler::exchange_keys()
 
     // Handle the exchange keys request
     Request_t request;
-    std::copy_n(client_id, CLIENT_ID_SIZE, request.client_id);
+    request.assign_client_id(client_id);
     request.code = SEND_PUBLIC_KEY;
     request.append_to_payload(username, NAME_SIZE);
-    request.append_to_payload(rsa_public_key, RSA_KEY_SIZE);
+    request.append_to_payload(rsa_public_key, PUBLIC_KEY_SIZE);
 
     Response_t response = connection_handler.exchange_messages(request);
     if (response.code == AES_KEY_EXCHANGE)
     {
-        std::copy_n(response.payload.begin() + AES_KEY_OFFSET, AES_KEY_SIZE, aes_key);
+        aes_key = response.read_from_payload(AES_KEY_OFFSET, response.payload_size - AES_KEY_OFFSET);
         aes_key = rsa_private_wrapper.decrypt(aes_key);
     }
     if (response.code == GENERAL_ERROR)
@@ -113,11 +114,6 @@ void RequestHandler::backup_file()
     //computing the original file checksum
     std::string cksum_string = readfile(filename);
     int  cksum = std::stoi(cksum_string.substr(0, cksum_string.find('\t')));
-
-    // getting the file size
-    original_file.seekg(0, std::ios::end); // Move the get pointer to the end of the file to determine the file size
-    std::streampos original_file_size = original_file.tellg(); // Get the file size
-    original_file.seekg(0, std::ios::beg); // Move the get pointer back to the beginning of the file
 
     size_t encrypted_file_size = 0, original_file_size = 0;
 
@@ -145,7 +141,7 @@ void RequestHandler::backup_file()
         encrypted_file.seekg(0, std::ios::beg); // Move the get pointer back to the beginning of the file
         
         // preparing the file request
-        unsigned int packet_number = 0, total_packets = encrypted_file_size / PACKET_SIZE;
+        size_t packet_number = 0, total_packets = encrypted_file_size / PACKET_SIZE;
         if (encrypted_file_size % PACKET_SIZE != 0)
         {
             total_packets++;
@@ -158,7 +154,7 @@ void RequestHandler::backup_file()
             
             // preparing the file request
             Request_t file_request;
-            std::copy_n(client_id, CLIENT_ID_SIZE, file_request.client_id);
+            file_request.assign_client_id(client_id);
             file_request.code = SEND_FILE;
             file_request.append_to_payload(std::to_string(encrypted_file_size), CONTENT_LENGTH_SIZE);
             file_request.append_to_payload(std::to_string(original_file_size), CONTENT_LENGTH_SIZE);
@@ -167,18 +163,18 @@ void RequestHandler::backup_file()
             file_request.append_to_payload(filename, FILE_NAME_SIZE);
             file_request.append_to_payload(buffer, encrypted_file.gcount());
 
-            // sending the file packet
+            // sending the final packet
             if(packet_number == total_packets - 1)
             {
+                remove((filename + ".enc").c_str()); // remove the encrypted file
                 Response_t response = connection_handler.exchange_messages(file_request);
                 if(response.code == FILE_RECEIVED)
                 {
-                    int response_cksum;
-                    std::memcpy(&response_cksum, response.payload.data() + CKSUM_OFFSET, CKSUM_SIZE);
+                    int response_cksum = std::stoi(response.read_from_payload(CKSUM_OFFSET, CKSUM_SIZE));
                     if(cksum == response_cksum)
                     {
                         Request_t crc_request;
-                        std::copy_n(client_id, CLIENT_ID_SIZE, crc_request.client_id);
+                        crc_request.assign_client_id(client_id);
                         crc_request.code = CORRECT_CRC;
                         crc_request.append_to_payload(filename, FILE_NAME_SIZE);
                         Response_t crc_response = connection_handler.exchange_messages(crc_request);
@@ -190,7 +186,7 @@ void RequestHandler::backup_file()
                     else
                     {
                         Request_t crc_request;
-                        std::copy_n(client_id, CLIENT_ID_SIZE, crc_request.client_id);
+                        crc_request.assign_client_id(client_id);
                         crc_request.code = INCORRECT_CRC;
                         crc_request.append_to_payload(filename, FILE_NAME_SIZE);
                         Response_t crc_response = connection_handler.exchange_messages(crc_request);
@@ -209,7 +205,7 @@ void RequestHandler::backup_file()
     if(num_of_attempts == NUM_OF_TRIES)
     {
         Request_t crc_request;
-        std::copy_n(client_id, CLIENT_ID_SIZE, crc_request.client_id);
+        crc_request.assign_client_id(client_id);
         crc_request.code = FOURTH_INCORRECT_CRC;
         crc_request.append_to_payload(filename, FILE_NAME_SIZE);
         Response_t crc_response = connection_handler.exchange_messages(crc_request);

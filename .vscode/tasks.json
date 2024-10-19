@@ -1,25 +1,41 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "cppbuild",
-			"label": "C/C++: g++.exe build active file",
-			"command": "C:\\MinGw\\MinGW\\bin\\g++.exe",
-			"args": [
-				"-fdiagnostics-color=always",
-				"-g",
-				"${file}",
-				"-o",
-				"${fileDirname}\\${fileBasenameNoExtension}.exe"
-			],
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+				"-march=native",
+                "client.cpp",
+                "connection_handler.cpp",
+                "request_handler.cpp",
+				"AESWrapper.cpp",
+				"RSAWrapper.cpp",
+				"Base64Wrapper.cpp",
+				"cksum.cpp",
+                "-I", "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Boost/boost_1_86_0",
+                "-I", "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/cryptopp-master",
+                "-L", "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Boost/boost_1_86_0/stage/lib",
+                "-L", "C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/cryptopp-master/build",
+                "-lboost_system-mgw13-mt-x32-1_86",
+                "-lcryptopp",
+                "-o",
+                "client.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Generated task for building the project.",
 			"options": {
-				"cwd": "${fileDirname}"
-			},
-			"problemMatcher": [
-				"$gcc"
-			],
-			"group": "build",
-			"detail": "compiler: C:\\MinGw\\MinGW\\bin\\g++.exe"
-		}
-	]
+                "cwd": "${workspaceFolder}/client"
+            }
+        }
+    ]
 }

@@ -8,50 +8,28 @@
 // Protocol constants
 const uint8_t PROTOCOL_VERSION = 3; // Shared protocol version
 
-// Request Structure
-typedef struct
+struct Request_t
 {
-    uint8_t client_id[16];
+    uint8_t client_id[16] = {0};
     uint8_t version = PROTOCOL_VERSION;
-    uint16_t code;
-    uint32_t payload_size;
+    uint16_t code = 0;
+    uint32_t payload_size = 0;
     std::vector<uint8_t> payload;
 
-    void append_to_payload(const std::string &data, size_t size)
-    {
-        if (data.empty() || size == 0)
-        {
-            return; // Invalid data or size
-        }
-
-        // Calculate the actual data size
-        size_t data_size = std::min(size, data.size());
-
-        // Append the actual data
-        payload.insert(payload.end(), data.begin(), data.begin() + data_size);
-
-        // Calculate the padding size
-        size_t padding_size = size > data_size ? size - data_size : 0;
-
-        // Append padding if necessary
-        if (padding_size > 0)
-        {
-            payload.insert(payload.end(), padding_size, '\0'); // Padding with zeros
-        }
-
-        // Update payload size
-        payload_size = static_cast<uint32_t>(payload.size());
-    }
-} Request_t;
+    void assign_client_id(const std::string &client_id);
+    void append_to_payload(const std::string &data, size_t size);
+};
 
 // Response Structure
-typedef struct
+struct Response_t
 {
     uint8_t version = PROTOCOL_VERSION;
-    uint16_t code;
-    uint32_t payload_size;
+    uint16_t code = 0;
+	uint32_t payload_size = 0;
     std::vector<uint8_t> payload;
-} Response_t;
+
+    std::string read_from_payload(size_t offset, size_t size);
+};
 
 // Request Codes
 enum RequestCode

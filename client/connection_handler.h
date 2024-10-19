@@ -2,7 +2,7 @@
 #define CONNECTION_HANDLER_H
 
 #include <boost/asio.hpp>
-#include <protocol.h>
+#include "protocol.h"
 
 using boost::asio::ip::tcp;
 

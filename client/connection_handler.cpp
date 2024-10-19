@@ -38,6 +38,9 @@ Response_t ConnectionHandler::exchange_messages(const Request_t& request)
         }
         std::cout << "Server responded with an error" << std::endl;
     }
+
+    // This return statement will never be reached
+    return Response_t();
 }
 
 void ConnectionHandler::write_request(const Request_t& request)

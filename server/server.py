@@ -9,7 +9,7 @@ def read_port():
         with open("port.info", "r") as f:
             return int(f.read())
     else:
-        return 1256
+        return 1256 # default port
 
 
 def handle_client(client_socket):

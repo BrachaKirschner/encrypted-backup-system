@@ -8,6 +8,8 @@
 #include <regex>
 #include <cstdint> // for UINT16_MAX
 
+#define MAX_USERNAME_SIZE 100
+
 std::string read_address()
 {
     std::ifstream file("transfer.info");
@@ -74,9 +76,9 @@ std::string read_username()
     file.close();
 
     // validate the username
-    if(username.size() > NAME_SIZE-1) // -1 for the null terminator
+    if(username.size() > MAX_USERNAME_SIZE)
     {
-        throw std::runtime_error("Fatal: username too long. Max length is " + std::to_string(NAME_SIZE-1));
+        throw std::runtime_error("Fatal: username too long. Max length is " + MAX_USERNAME_SIZE);
     }
 
     return username;
@@ -122,7 +124,7 @@ std::string read_rsa_key()
     return rsa_key;
 }
 
-void write_username(std::string username)
+void write_username(const std::string& username)
 {
     std::ofstream file("me.info");
     if(!file.is_open())
@@ -133,7 +135,7 @@ void write_username(std::string username)
     file.close();
 }
 
-void write_client_id(std::string client_id)
+void write_client_id(const std::string& client_id)
 {
     std::ofstream file("me.info");
     if(!file.is_open())
@@ -144,7 +146,7 @@ void write_client_id(std::string client_id)
     file.close();
 }
 
-void write_rsa_private_key(std::string rsa_private_key)
+void write_rsa_private_key(const std::string& rsa_private_key)
 {
     std::ofstream file1("me.info");
     if(!file1.is_open())

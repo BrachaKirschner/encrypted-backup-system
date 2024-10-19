@@ -487,10 +487,3 @@ std::string readfile(std::string fname)
         return "";
     }
 }
-
-
-int main(int argc, char** argv) 
-{
-    std::cout << readfile(argv[1]) << std::endl;
-    exit(0);
-}
