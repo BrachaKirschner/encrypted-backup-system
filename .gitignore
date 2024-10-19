@@ -1,0 +1,44 @@
+# Ignore Visual Studio temporary files
+.vs/
+
+# Ignore build output directories
+build/
+bin/
+obj/
+
+# Ignore other temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore compiled object files
+*.o
+*.obj
+
+# Ignore compiled dynamic libraries
+*.dll
+*.so
+*.dylib
+
+# Ignore compiled static libraries
+*.lib
+*.a
+
+# Ignore executable files
+*.exe
+*.out
+*.app
+
+# Ignore CMake build directories
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+   
