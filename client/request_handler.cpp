@@ -117,7 +117,7 @@ void RequestHandler::backup_file()
 
     size_t encrypted_file_size = 0, original_file_size = 0;
 
-    // encrypting the file
+	// encrypting the file in chunks
     AESWrapper aes_wrapper = AESWrapper(reinterpret_cast<const unsigned char*>(aes_key.c_str()), AES_KEY_SIZE);
     std::fstream encrypted_file(filename + ".enc", std::ios::binary);
     while (!original_file.eof())
@@ -141,7 +141,7 @@ void RequestHandler::backup_file()
         encrypted_file.seekg(0, std::ios::beg); // Move the get pointer back to the beginning of the file
         
         // preparing the file request
-        size_t packet_number = 0, total_packets = encrypted_file_size / PACKET_SIZE;
+        size_t packet_number = 1, total_packets = encrypted_file_size / PACKET_SIZE;
         if (encrypted_file_size % PACKET_SIZE != 0)
         {
             total_packets++;
@@ -164,7 +164,7 @@ void RequestHandler::backup_file()
             file_request.append_to_payload(buffer, encrypted_file.gcount());
 
             // sending the final packet
-            if(packet_number == total_packets - 1)
+            if(packet_number == total_packets)
             {
                 remove((filename + ".enc").c_str()); // remove the encrypted file
                 Response_t response = connection_handler.exchange_messages(file_request);
