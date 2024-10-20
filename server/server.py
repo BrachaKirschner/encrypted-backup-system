@@ -1,7 +1,6 @@
 import os
 import socket
 import threading
-
 from client_session import ClientSession
 
 def read_port():
@@ -13,6 +12,7 @@ def read_port():
 
 
 def handle_client(client_socket):
+    print(f"Accepted connection from {client_socket.getpeername()}")
     with client_socket:
         ClientSession(client_socket).start()
 

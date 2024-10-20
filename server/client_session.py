@@ -1,12 +1,6 @@
 import struct
-
-class Request:
-    def __init__(self, client_id, version, opcode, payload_size, payload):
-        self.client_id = client_id
-        self.version = version
-        self.opcode = opcode
-        self.payload_size = payload_size
-        self.payload = payload
+from request_handler import RequestHandler
+from protocol import Request
 
 class ClientSession:
     def __init__(self, client_socket):

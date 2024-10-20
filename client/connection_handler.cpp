@@ -12,8 +12,15 @@ using boost::asio::ip::tcp;
 ConnectionHandler::ConnectionHandler()
     : socket(io_context)
 {
-    tcp::resolver resolver(io_context);
-    boost::asio::connect(socket, resolver.resolve(read_address(), read_port()));
+    try
+    {
+		tcp::resolver resolver(io_context);
+		boost::asio::connect(socket, resolver.resolve(read_address(), read_port()));
+	}
+    catch (const std::exception& e)
+    {
+		throw std::runtime_error("Fatal: could not connect to the server");
+    }
 }
 
 ConnectionHandler::~ConnectionHandler()
