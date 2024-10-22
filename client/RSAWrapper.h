@@ -15,7 +15,7 @@ public:
 	 * 
 	 * @note The key size must be 160 bytes
 	 */
-	static const unsigned int KEYSIZE = 160;
+	static const unsigned int KEYSIZE = 128;
 
 	/**
 	 * @brief The key size in bits

@@ -7,6 +7,7 @@
 #include <boost/asio.hpp>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
 #define NUM_OF_TRIES 3
 #define RSA_KEY_BITS_SIZE 1024
@@ -17,7 +18,9 @@ RequestHandler::RequestHandler()
 	: connection_handler(), username(), filename(), client_id(), private_rsa_key(), aes_key()
 {
     username = read_username() + '\0';
-    filename = read_filename();
+    file_path = read_file_path();
+    std::filesystem::path path(file_path);
+    filename = path.filename().string();
 }
 
 RequestHandler::~RequestHandler()
@@ -53,6 +56,7 @@ void RequestHandler::login()
 {
     // handle the login request
     Request_t request;
+	client_id = read_client_id();
     request.assign_client_id(client_id);
     request.code = LOGIN;
     request.append_to_payload(username, NAME_SIZE);
@@ -105,15 +109,15 @@ void RequestHandler::exchange_keys()
 void RequestHandler::backup_file()
 {
     // opening the file
-    std::ifstream original_file(filename, std::ios::binary);
+	std::ifstream original_file(file_path, std::ios::binary);
     if (!original_file.is_open())
     {
         throw std::runtime_error("File not found");
     }
 
     //computing the original file checksum
-    std::string cksum_string = readfile(filename);
-    int  cksum = std::stoi(cksum_string.substr(0, cksum_string.find('\t')));
+    std::string cksum_string = readfile(file_path);
+    unsigned long int cksum = std::stoul(cksum_string.substr(0, cksum_string.find('\t')));
 
     size_t encrypted_file_size = 0, original_file_size = 0;
 
@@ -125,24 +129,25 @@ void RequestHandler::backup_file()
         // reading chunk of the file and encrypting it
         char buffer[PACKET_SIZE];
         original_file.read(buffer, PACKET_SIZE);
-        std::string encrypted_content = aes_wrapper.encrypt(buffer, PACKET_SIZE);
+		size_t gcount = original_file.gcount();
+        std::string encrypted_content = aes_wrapper.encrypt(buffer, gcount);
         encrypted_file.write(encrypted_content.c_str(), encrypted_content.size());
 
         // updating the sizes
-        original_file_size += original_file.gcount();
+        original_file_size += gcount;
         encrypted_file_size += encrypted_content.size();
     }
 
     // The client will try to send the file until it receives a correct CRC from the server or until it reaches the maximum number of attempts
     // The file will be sent in packets of and client will only wait for the last packet to be acknowledged
-    unsigned short int num_of_attempts = 0;
+    size_t num_of_attempts = 0;
     do
     {
         encrypted_file.seekg(0, std::ios::beg); // Move the get pointer back to the beginning of the file
         
         // preparing the file request
         size_t packet_number = 1, total_packets = encrypted_file_size / PACKET_SIZE;
-        if (encrypted_file_size % PACKET_SIZE != 0)
+		if (encrypted_file_size % PACKET_SIZE != 0) // if the last packet is not full
         {
             total_packets++;
         }
@@ -151,17 +156,19 @@ void RequestHandler::backup_file()
         {
             char buffer[PACKET_SIZE];
             encrypted_file.read(buffer, PACKET_SIZE);
+
+			std::string buffer_string = std::string(buffer, encrypted_file.gcount());
             
             // preparing the file request
             Request_t file_request;
             file_request.assign_client_id(client_id);
             file_request.code = SEND_FILE;
             file_request.append_to_payload(std::to_string(encrypted_file_size), CONTENT_LENGTH_SIZE);
-            file_request.append_to_payload(std::to_string(original_file_size), CONTENT_LENGTH_SIZE);
+            file_request.append_to_payload(std::to_string(original_file_size), ORIGINAL_FILE_LENGTH_SIZE);
             file_request.append_to_payload(std::to_string(packet_number), PACKET_NUMBER_SIZE);
             file_request.append_to_payload(std::to_string(total_packets), TOTAL_PACKETS_SIZE);
             file_request.append_to_payload(filename, FILE_NAME_SIZE);
-            file_request.append_to_payload(buffer, encrypted_file.gcount());
+            file_request.append_to_payload(buffer_string, buffer_string.size());
 
             // sending the final packet
             if(packet_number == total_packets)

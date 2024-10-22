@@ -14,19 +14,29 @@
   <component name="ChangeListManager">
     <list default="true" id="6a01bcd2-f219-4f3e-a131-9c9ce5defaf0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/RSAWrapper.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/RSAWrapper.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/cksum.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/cksum.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/client.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/client.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/file_utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/file_utils.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/file_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/file_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/protocol.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/protocol.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/request_handler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/request_handler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/request_handler.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/request_handler.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maman15.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/maman15.vcxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maman15.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/maman15.vcxproj.filters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.exe.recipe" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.exe.recipe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.command.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.command.1.tlog" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.write.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.write.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.command.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.command.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.read.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.read.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.write.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.write.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.read.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/link.read.1.tlog" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/client_session.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/client_session.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/protocol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/request_handler.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x64/Debug/maman15.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/transfer.info" beforeDir="false" afterPath="$PROJECT_DIR$/transfer.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +157,10 @@
       <workItem from="1728844420797" duration="1511000" />
       <workItem from="1728886669589" duration="2179000" />
       <workItem from="1729365010963" duration="1905000" />
-      <workItem from="1729409460092" duration="7173000" />
+      <workItem from="1729409460092" duration="15488000" />
+      <workItem from="1729449344849" duration="3707000" />
+      <workItem from="1729491565730" duration="30212000" />
+      <workItem from="1729586789977" duration="3630000" />
     </task>
     <servers />
   </component>
@@ -158,34 +171,55 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>19</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>16</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/request_handler.py</url>
           <line>19</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/client_session.py</url>
-          <line>8</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/server/server.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="6" />
+          <line>19</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/server.py</url>
+          <line>38</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/client_session.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/client_session.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="thread.native_id" />
+        <watch expression="thread.additional_info" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1729424063855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1729586819018" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
   </component>
 </project>

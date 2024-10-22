@@ -17,6 +17,7 @@ private:
     ConnectionHandler connection_handler;
     std::string username;
     std::string filename;
+    std::string file_path;
     std::string client_id;
     std::string private_rsa_key;
     std::string aes_key;

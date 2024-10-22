@@ -145,7 +145,6 @@
     <ClInclude Include="client\protocol.h" />
     <ClInclude Include="client\request_handler.h" />
     <ClInclude Include="client\RSAWrapper.h" />
-    <ClInclude Include="out\build\x64-debug\cmakefiles\showincludes\foo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cmake-build-debug\cmakefiles\3.29.6\CMakeDetermineCompilerABI_C.bin" />

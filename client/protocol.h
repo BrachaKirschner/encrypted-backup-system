@@ -8,6 +8,7 @@
 // Protocol constants
 const uint8_t PROTOCOL_VERSION = 3; // Shared protocol version
 
+// Request Structure
 struct Request_t
 {
     uint8_t client_id[16] = {0};
@@ -16,7 +17,19 @@ struct Request_t
     uint32_t payload_size = 0;
     std::vector<uint8_t> payload;
 
+    /**
+	 * Assigns the client id to the request.
+	 * @param client_id the client id to assign.
+     */
     void assign_client_id(const std::string &client_id);
+
+	/**
+	 * Appends data to the end of the payload.
+     * If the data size is smaller than the size parameter, the rest of the payload will be padded with zeros.
+	 * If the data size is larger than the size parameter, the data will be truncated.
+	 * @param data the data to append.
+	 * @param size the size of the data to append.
+	 */
     void append_to_payload(const std::string &data, size_t size);
 };
 
@@ -28,6 +41,12 @@ struct Response_t
 	uint32_t payload_size = 0;
     std::vector<uint8_t> payload;
 
+	/**
+	 * Reads data from the payload.
+	 * @param offset the offset to start reading from the payload.
+	 * @param size the size of the data to read.
+	 * @return the data read.
+     */
     std::string read_from_payload(size_t offset, size_t size);
 };
 

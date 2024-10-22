@@ -7,16 +7,26 @@ class ClientSession:
         self.client_socket = client_socket
 
     def start(self):
-        request = self.read_request()
-        request_handler = RequestHandler(request)
-        response = request_handler.handle()
-        self.write_response(response)
+        while True:
+            try:
+                request = self.read_request()
+                request_handler = RequestHandler(request)
+                response = request_handler.handle()
+                self.write_response(response)
+            except Exception as e:
+                print(f"Error: {e}")
+                break
 
     def read_request(self):
-        # Read the fixed-size part of the request
+        # Read the fixed-size part of the request (header)
         header_format = '!16s B H I'
         header_size = struct.calcsize(header_format)
-        header_data = self.client_socket.recv(header_size)
+        header_data = b''
+        while len(header_data) < header_size: # Loop until all header bytes are read
+            packet = self.client_socket.recv(header_size - len(header_data))
+            if not packet:
+                raise ConnectionError("Socket connection lost")
+            header_data += packet
         client_id, version, op_code, payload_size = struct.unpack(header_format, header_data)
 
         # Read the variable-size part of the request
@@ -28,7 +38,6 @@ class ClientSession:
         response_format = f'!B H I {len(response.payload)}s'
         response_data = struct.pack(
             response_format,
-            response.client_id,
             response.version,
             response.opcode,
             response.payload_size,

@@ -15,7 +15,8 @@ unsigned long memcrc(char * b, size_t n);
 /**
  * @brief This function reads a file and returns its checksum, size and name
  * 
- * @param fname the name of the file
+ * @param fname the name of the file or its path.
+ * @note If a file name is given, the file is assumed to be in the same directory as the executable.
  * @return std::string the checksum, size and name of the file
  */
 std::string readfile(std::string fname);

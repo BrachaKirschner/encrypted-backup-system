@@ -36,14 +36,14 @@ class RequestHandler:
 
         # Check if the user is already registered
         if name in RequestHandler.client_data:
-            self.response = Response(1601, 0, b'')
+            self.response = Response(Code.REGISTRATION_FAILED.value, 0, b'')
         else:
-            random_uuid = uuid.uuid4() # Generate a random UUID of size 16 bytes
-            RequestHandler.client_data[name] = {'uuid': random_uuid}
+            random_uuid = uuid.uuid4().bytes # Generate a random UUID of size 16 bytes
+            RequestHandler.client_data[random_uuid] = {'name': name}
 
             # Creating the response
-            payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s', random_uuid.bytes)
-            self.response = Response(1600, len(payload), payload)
+            payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s', random_uuid)
+            self.response = Response(Code.REGISTRATION_SUCCESSFUL.value, len(payload), payload)
 
 
     def exchange_keys(self):
@@ -56,30 +56,31 @@ class RequestHandler:
         encrypted_aes_key = self.generate_encrypted_aes_key(rsa_key) # Generate the encrypted AES key
 
         # Creating the response
-        payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s {len(encrypted_aes_key)}s', client_id.bytes, encrypted_aes_key)
-        self.response = Response(Code.AES_KEY_EXCHANGE, len(payload), payload)
+        payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s {len(encrypted_aes_key)}s', client_id, encrypted_aes_key)
+        self.response = Response(Code.AES_KEY_EXCHANGE.value, len(payload), payload)
 
 
     def login_user(self):
         # Extracting payload
-        name = self.request.payload.decode('utf-8')
-
+        client_id = self.request.client_id
         # Check if the user isn't registered
-        if name not in RequestHandler.client_data:
+        if client_id not in RequestHandler.client_data:
             self.response = Response(Code.LOGIN_FAILED.value, 0, b'')
         else:
-            client_id = self.request.client_id
             encrypted_aes_key = self.generate_encrypted_aes_key(self.client_data[client_id]['rsa_key'])
-            payload = client_id + encrypted_aes_key
+
+            # Creating the response
+            payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s {len(encrypted_aes_key)}s', client_id, encrypted_aes_key)
             self.response = Response(Code.LOGIN_SUCCESSFUL.value, len(payload), payload)
 
 
     def backup_file(self):
         # Extracting payload
-        payload_format = f'!{Size.CONTENT_LENGTH_SIZE.value}s {Size.ORIGINAL_FILE_LENGTH_SIZE.value}s {Size.PACKET_NUMBER_SIZE.value}s {Size.TOTAL_PACKETS_SIZE.value}s {Size.FILE_NAME_SIZE.value}s'
+        message_content_size = self.request.payload_size - Offset.MESSAGE_CONTENT_OFFSET.value
+        payload_format = f'!{Size.CONTENT_LENGTH_SIZE.value}s {Size.ORIGINAL_FILE_LENGTH_SIZE.value}s {Size.PACKET_NUMBER_SIZE.value}s {Size.TOTAL_PACKETS_SIZE.value}s {Size.FILE_NAME_SIZE.value}s {message_content_size}s'
         content_size, orig_file_size, packet_number, total_packets, file_name, message_content = struct.unpack(payload_format, self.request.payload)
         file_name = file_name.decode('utf-8')
-        message_content = self.request.payload[Offset.MESSAGE_CONTENT_OFFSET:].decode('utf-8')
+        message_content = message_content.decode('utf-8')
 
         client_id = self.request.client_id
         aes_key = RequestHandler.client_data[client_id]['aes_key']
@@ -101,14 +102,14 @@ class RequestHandler:
 
 
     def correct_crc(self):
-        self.response = Response(Code.MESSAGE_RECEIVED, len(self.request.client_id), self.request.client_id)
+        self.response = Response(Code.MESSAGE_RECEIVED.value, len(self.request.client_id), self.request.client_id)
 
     def incorrect_crc(self):
         file_path = 'backupsvr/' + self.request.client_id + '/' + self.request.payload[Offset.FILE_NAME_OFFSET.value:].decode('utf-8')
         os.remove(file_path)
 
     def fourth_incorrect_crc(self):
-        self.response = Response(Code.MESSAGE_RECEIVED, len(self.request.client_id), self.request.client_id)
+        self.response = Response(Code.MESSAGE_RECEIVED.value, len(self.request.client_id), self.request.client_id)
 
     def generate_encrypted_aes_key(self, rsa_key):
         # Creating an AES-CBC key of length 256 bit
