@@ -79,25 +79,24 @@ class RequestHandler:
         message_content_size = self.request.payload_size - Offset.MESSAGE_CONTENT_OFFSET.value
         payload_format = f'!{Size.CONTENT_LENGTH_SIZE.value}s {Size.ORIGINAL_FILE_LENGTH_SIZE.value}s {Size.PACKET_NUMBER_SIZE.value}s {Size.TOTAL_PACKETS_SIZE.value}s {Size.FILE_NAME_SIZE.value}s {message_content_size}s'
         content_size, orig_file_size, packet_number, total_packets, file_name, message_content = struct.unpack(payload_format, self.request.payload)
-        file_name = file_name.decode('utf-8')
-        message_content = message_content.decode('utf-8')
-
+        file_name = file_name.rstrip(b'\x00').decode('utf-8')
         client_id = self.request.client_id
         aes_key = RequestHandler.client_data[client_id]['aes_key']
 
         # Decrypt the message content
         decrypted_content = AES.new(aes_key, AES.MODE_CBC, b'\x00'*16).decrypt(message_content)
 
-        if os.path.isdir('backupsvr/' + client_id):
-            os.makedirs('backupsvr/' + client_id)
-        with open('backupsvr/' + client_id + '/' + file_name, 'wb') as file:
+        # Save the decrypted content to a file
+        if not os.path.exists('backupsvr/'):
+            os.makedirs('backupsvr/')
+        with open(file_name, 'wb') as file:
             file.write(decrypted_content)
 
         crc = memcrc(decrypted_content) # Calculate the CRC of the message content
 
         # Creating the response
         payload_format = f'!{Size.CLIENT_ID_SIZE.value}s, {Size.CONTENT_LENGTH_SIZE.value}s, {Size.FILE_NAME_SIZE.value}s, {Size.CHECKSUM_SIZE.value}s'
-        payload = struct.pack(payload_format, client_id.encode('utf-8'), len(message_content), file_name.encode('utf-8'), crc)
+        payload = struct.pack(payload_format, client_id, len(message_content), file_name.encode('utf-8'), crc)
         self.response = Response(Code.FILE_RECEIVED.value, len(payload), payload)
 
 

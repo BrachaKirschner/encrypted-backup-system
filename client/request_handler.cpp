@@ -123,7 +123,8 @@ void RequestHandler::backup_file()
 
 	// encrypting the file in chunks
     AESWrapper aes_wrapper = AESWrapper(reinterpret_cast<const unsigned char*>(aes_key.c_str()), AES_KEY_SIZE);
-    std::fstream encrypted_file(filename + ".enc", std::ios::binary);
+    std::fstream encrypted_file(filename + ".enc", std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
+
     while (!original_file.eof())
     {
         // reading chunk of the file and encrypting it

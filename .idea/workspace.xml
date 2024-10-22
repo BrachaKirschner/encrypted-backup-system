@@ -14,7 +14,15 @@
   <component name="ChangeListManager">
     <list default="true" id="6a01bcd2-f219-4f3e-a131-9c9ce5defaf0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/request_handler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/request_handler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/request_handler.obj.enc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/me.info" beforeDir="false" afterPath="$PROJECT_DIR$/me.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/priv.key" beforeDir="false" afterPath="$PROJECT_DIR$/priv.key" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/request_handler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +146,7 @@
       <workItem from="1729409460092" duration="15488000" />
       <workItem from="1729449344849" duration="3707000" />
       <workItem from="1729491565730" duration="30212000" />
-      <workItem from="1729586789977" duration="11320000" />
+      <workItem from="1729586789977" duration="19123000" />
     </task>
     <servers />
   </component>
@@ -169,11 +177,6 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
-          <line>50</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/client_session.py</url>
           <line>20</line>
           <option name="timeStamp" value="19" />
@@ -198,6 +201,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1729586819018" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1729629923652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
   </component>
 </project>
