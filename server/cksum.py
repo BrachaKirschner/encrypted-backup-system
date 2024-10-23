@@ -62,6 +62,15 @@ crctab = [ 0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc,
 UNSIGNED = lambda n: n & 0xffffffff
 
 def memcrc(b):
+    """
+    Calculate the CRC checksum for a given byte sequence.
+
+    Args:
+        b (bytes): The byte sequence to calculate the checksum for.
+
+    Returns:
+        int: The calculated CRC checksum.
+    """
     n = len(b)
     i = c = s = 0
     for ch in b:
@@ -75,6 +84,15 @@ def memcrc(b):
     return UNSIGNED(~s)
 
 def readfile(fname):
+    """
+    Read a file and calculate its CRC checksum and length.
+
+    Args:
+        fname (str): The name of the file to read or its path.
+
+    Returns:
+        str: A string containing the CRC checksum, file length, and file name.
+    """
     try:
         buffer = open(fname, 'rb').read()
         return f"{memcrc(buffer)}\t{len(buffer)}\t{fname}"
@@ -84,7 +102,3 @@ def readfile(fname):
     except Exception as err:
         print ("Error processing the file", err)
         exit (-1)
-
-
-if __name__ == '__main__':
-    print (readfile(sys.argv[-1]))
