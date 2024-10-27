@@ -41,6 +41,7 @@ void RequestHandler::register_user()
         client_id = response.read_from_payload(CLIENT_ID_OFFSET, CLIENT_ID_SIZE);
         write_username(username);
         write_client_id(client_id);
+		std::cout << "User " << username << " registered successfully" << std::endl;
     }
     if (response.code == REGISTRATION_FAILED)
     {
@@ -68,11 +69,13 @@ void RequestHandler::login()
         aes_key = response.read_from_payload(AES_KEY_OFFSET, response.payload_size - AES_KEY_OFFSET);
         RSAPrivateWrapper rsa_private_wrapper = RSAPrivateWrapper(rsa_key);
         aes_key = rsa_private_wrapper.decrypt(aes_key);
+		std::cout << "User " << username << " logged in successfully" << std::endl;
     }
     if (response.code == LOGIN_FAILED)
     {
 		std::filesystem::remove("me.info");
 		std::filesystem::remove("priv.key");
+		std::cout << "User " << username << " not found, registering..." << std::endl;
         register_user();
         exchange_keys();
     }
@@ -102,6 +105,7 @@ void RequestHandler::exchange_keys()
     {
         aes_key = response.read_from_payload(AES_KEY_OFFSET, response.payload_size - AES_KEY_OFFSET);
         aes_key = rsa_private_wrapper.decrypt(aes_key);
+		std::cout << "AES key exchanged successfully" << std::endl;
     }
     if (response.code == GENERAL_ERROR)
     {
@@ -191,7 +195,7 @@ void RequestHandler::backup_file()
                         Response_t crc_response = connection_handler.exchange_messages(crc_request);
                         if(crc_response.code == MESSAGE_RECEIVED)
                         {
-                            std::cout << "File " << filename << " backed up successfully" << std::endl;
+							std::cout << "File " << filename << " size: " << original_file_size << " bytes backed up successfully" << std::endl;
 							return;
                         }
                     }

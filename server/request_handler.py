@@ -3,8 +3,7 @@ import struct
 import uuid
 from protocol import Response, Size, Offset, Code
 from crypto_utils import decrypt_file_with_aes, encrypt_with_rsa, generate_aes_key
-from cksum import compute_file_crcg
-
+from cksum import compute_file_crc
 
 class RequestHandler:
     """ The class to handle the client requests """

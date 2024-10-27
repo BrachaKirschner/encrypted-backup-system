@@ -5,7 +5,7 @@ The server listens for connections from clients and stores the files that the cl
 I developed this project for the Programming defensive systems (20937) course at the Open University.
 
 ## Demo Video
-[![Demo Video](https://img.youtube
+The demo video is available [here](https://youtu.be/fK1mC_cp8Zc).
 
 ## Configuration
 ### Client

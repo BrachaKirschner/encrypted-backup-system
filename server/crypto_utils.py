@@ -38,5 +38,5 @@ def decrypt_file_with_aes(encrypted_file_path, decrypted_file_path, aes_key):
         buffer = encrypted_file.read()
         cipher = AES.new(aes_key, AES.MODE_CBC, b'\x00' * AES.block_size)
         decrypted_data = cipher.decrypt(buffer)
-        decrypted_data = unpad(decrypted_data, AES.block_size)
-        decrypted_file.write(decrypted_data)
+        unpadded_data = unpad(decrypted_data, AES.block_size)
+        decrypted_file.write(unpadded_data)
