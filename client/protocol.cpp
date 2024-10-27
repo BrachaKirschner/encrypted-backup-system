@@ -1,4 +1,7 @@
 #include "protocol.h"
+#include <cstring>
+#include <string>
+#include <boost/asio.hpp> // For nthol
 
 void Request_t::append_to_payload(const std::string &data, size_t size)
 {
@@ -43,5 +46,15 @@ std::string Response_t::read_from_payload(size_t offset, size_t size)
         return ""; // Invalid offset or size
     }
 
-    return std::string(payload.begin() + offset, payload.begin() + offset + size);
+    std::string data = std::string(payload.begin() + offset, payload.begin() + offset + size);
+
+	// If the data is a checksum or file name, convert it to host byte order
+    if (size == CKSUM_SIZE || size == CONTENT_LENGTH_SIZE)
+    {
+        uint32_t network_value;
+		std::memcpy(&network_value, data.c_str(), sizeof(network_value));
+		data = std::to_string(ntohl(network_value));
+    }
+
+    return data;
 }

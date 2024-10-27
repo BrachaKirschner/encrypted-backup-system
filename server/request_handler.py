@@ -3,10 +3,11 @@ import struct
 import uuid
 from protocol import Response, Size, Offset, Code
 from crypto_utils import decrypt_file_with_aes, encrypt_with_rsa, generate_aes_key
-from server.cksum import readfile
+from cksum import compute_file_crcg
 
 
 class RequestHandler:
+    """ The class to handle the client requests """
     # Dictionary to store all registered client data
     client_data = {}
 
@@ -30,6 +31,7 @@ class RequestHandler:
 
 
     def register_user(self):
+        """ Register the user """
         # Extracting payload
         name = self.request.payload.decode('utf-8')
 
@@ -46,6 +48,7 @@ class RequestHandler:
 
 
     def exchange_keys(self):
+        """ Exchange the AES key """
         # Extracting payload
         rsa_key = self.request.payload[ # Extract the RSA key from the request
                   Offset.PUBLIC_KEY_OFFSET.value: Offset.PUBLIC_KEY_OFFSET.value + Size.PUBLIC_KEY_SIZE.value]
@@ -62,13 +65,16 @@ class RequestHandler:
 
 
     def login_user(self):
+        """ Login the user """
         # Extracting payload
         client_id = self.request.client_id
         # Check if the user isn't registered
         if client_id not in RequestHandler.client_data:
             self.response = Response(Code.LOGIN_FAILED.value, 0, b'')
         else:
-            encrypted_aes_key = self.generate_encrypted_aes_key(self.client_data[client_id]['rsa_key'])
+            aes_key = generate_aes_key()
+            self.client_data[client_id]['aes_key'] = aes_key # Storing the AES key in the client's data for future use
+            encrypted_aes_key = encrypt_with_rsa(self.client_data[client_id]['rsa_key'], aes_key)
 
             # Creating the response
             payload = struct.pack(f'!{Size.CLIENT_ID_SIZE.value}s {len(encrypted_aes_key)}s', client_id, encrypted_aes_key)
@@ -76,43 +82,57 @@ class RequestHandler:
 
 
     def backup_file(self):
+        """ Backup the file """
         # Extracting payload
         message_content_size = self.request.payload_size - Offset.MESSAGE_CONTENT_OFFSET.value
         payload_format = f'!{Size.CONTENT_LENGTH_SIZE.value}s {Size.ORIGINAL_FILE_LENGTH_SIZE.value}s {Size.PACKET_NUMBER_SIZE.value}s {Size.TOTAL_PACKETS_SIZE.value}s {Size.FILE_NAME_SIZE.value}s {message_content_size}s'
         content_size, orig_file_size, packet_number, total_packets, file_name, message_content = struct.unpack(payload_format, self.request.payload)
-        file_name = file_name.rstrip(b'\x00').decode('utf-8')
         client_id = self.request.client_id
         client_uuid = uuid.UUID(bytes=client_id)
         aes_key = RequestHandler.client_data[client_id]['aes_key']
+        file_name = file_name.rstrip(b'\x00').decode('utf-8') # Decode the file name from bytes to string and unpad it
+        packet_number = int(packet_number.decode('utf-8').strip('\x00')) # Convert the packet number to an integer and unpad it
+        total_packets = int(total_packets.decode('utf-8').strip('\x00')) # Convert the total packets to an integer and unpad it
+
+        decrypted_file_path = f'backupsvr/{client_uuid}/{file_name}'
+        encrypted_file_path = f'backupsvr/{client_uuid}/{file_name}.enc'
 
         if packet_number == 1:
-            # Create a temporary file to store the packets
-            if not os.path.exists(f'tmp/{client_uuid}'):
-                os.makedirs(f'tmp/{client_uuid}')
+            # Create the backup directories needed if it doesn't exist
+            if not os.path.exists('backupsvr/'):
+                os.makedirs('backupsvr/')
+            if not os.path.exists(f'backupsvr/{client_uuid}'):
+                os.makedirs(f'backupsvr/{client_uuid}')
+            if os.path.exists(encrypted_file_path):
+                os.remove(encrypted_file_path)
 
-        encrypted_file_name = f'tmp/{client_uuid}/{file_name}.enc'
-        with open(encrypted_file_name, 'wb') as file:
+        # Write the message content to the encrypted temporary file
+        with open(encrypted_file_path, 'ab') as file:
             file.write(message_content)
 
+        # If this is the last packet, decrypt the encrypted file, read the CRC and file size, and send the response
         if packet_number == total_packets:
-            decrypt_file_with_aes(file_name, client_uuid, encrypted_file_name, aes_key)
-            os.remove(encrypted_file_name)
+            decrypt_file_with_aes(encrypted_file_path, decrypted_file_path, aes_key)
+            os.remove(encrypted_file_path) # Remove the encrypted file
+            crc_str = compute_file_crc(decrypted_file_path)
+            crc = int(crc_str.split('\t')[0])
+            file_size = int(crc_str.split('\t')[1])
 
-        crc_str = readfile(f'backupsvr/{client_uuid}/{file_name}')
-        crc = int(crc_str.split('\t')[0])
-
-        # Creating the response
-        payload_format = f'!{Size.CLIENT_ID_SIZE.value}s, {Size.CONTENT_LENGTH_SIZE.value}s, {Size.FILE_NAME_SIZE.value}s, {Size.CHECKSUM_SIZE.value}s'
-        payload = struct.pack(payload_format, client_id, len(message_content), file_name.encode('utf-8'), crc)
-        self.response = Response(Code.FILE_RECEIVED.value, len(payload), payload)
+            # Creating the response
+            payload_format = f'!{Size.CLIENT_ID_SIZE.value}s I {Size.FILE_NAME_SIZE.value}s I'
+            payload = struct.pack(payload_format, client_id, file_size, file_name.encode('utf-8'), crc)
+            self.response = Response(Code.FILE_RECEIVED.value, len(payload), payload)
 
 
     def correct_crc(self):
+        """ Correct CRC received """
         self.response = Response(Code.MESSAGE_RECEIVED.value, len(self.request.client_id), self.request.client_id)
 
     def incorrect_crc(self):
-        file_path = 'backupsvr/' + self.request.client_id + '/' + self.request.payload[Offset.FILE_NAME_OFFSET.value:].decode('utf-8')
-        os.remove(file_path)
+        """ Incorrect CRC received """
+        os.remove(f'backupsvr/{uuid.UUID(bytes=self.request.client_id)}/{self.request.payload.decode("utf-8")}') # Remove the backed up file with the incorrect CRC
 
     def fourth_incorrect_crc(self):
+        """ Fourth incorrect CRC received """
+        os.remove(f'backupsvr/{uuid.UUID(bytes=self.request.client_id)}/{self.request.payload.decode("utf-8")}') # Remove the backed up file with the incorrect CRC
         self.response = Response(Code.MESSAGE_RECEIVED.value, len(self.request.client_id), self.request.client_id)

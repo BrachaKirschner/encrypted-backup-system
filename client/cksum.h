@@ -17,8 +17,8 @@ unsigned long memcrc(char * b, size_t n);
  * 
  * @param fname the name of the file or its path.
  * @note If a file name is given, the file is assumed to be in the same directory as the executable.
- * @return std::string the checksum, size and name of the file
+ * @return std::string the checksum, size and name of the file in the format "checksum\tsize\tname"
  */
-std::string readfile(std::string fname);
+std::string compute_file_crc(std::string fname);
 
 #endif

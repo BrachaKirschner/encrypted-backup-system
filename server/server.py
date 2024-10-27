@@ -1,10 +1,13 @@
 import os
 import selectors
 import socket
-import threading
 from client_session import ClientSession
 
 def read_port():
+    """
+    Read the port from the port.info file
+    :return: The port number. If the file doesn't exist, return the default port 1256
+    """
     try:
         if os.path.exists("port.info"):
             with open("port.info", "r") as f:
@@ -14,13 +17,15 @@ def read_port():
     return 1256  # default port
 
 def handle_client(client_socket, sel):
+    """
+    Handle the client session
+    :param client_socket: The client socket
+    :param sel: The selector
+    """
     try:
         with client_socket:
-            print("Client connected") # debug
             client_session = ClientSession(client_socket)
-            print("Client session started") # debug
             client_session.start()
-            print("Client session ended") # debug
     except Exception as e:
         print(f"Error: {e}")
     finally:
@@ -28,6 +33,11 @@ def handle_client(client_socket, sel):
         client_socket.close()
 
 def accept_wrapper(sock, sel):
+    """
+    Accept the client connection
+    :param sock: The server socket
+    :param sel: The selector
+    """
     client_socket, addr = sock.accept()
     print(f"Accepted connection from {addr}")
     client_socket.setblocking(True)

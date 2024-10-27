@@ -13,10 +13,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a01bcd2-f219-4f3e-a131-9c9ce5defaf0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/server/crypto_utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/maman15.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/AESWrapper.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/AESWrapper.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/AESWrapper.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/AESWrapper.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/cksum.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/cksum.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/protocol.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/protocol.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/request_handler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/client/request_handler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/request_handler.h" beforeDir="false" afterPath="$PROJECT_DIR$/client/request_handler.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/document_test.txt.enc" beforeDir="false" afterPath="$PROJECT_DIR$/document_test.txt.enc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.ilk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.command.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.command.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.read.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.read.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.write.1.tlog" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/maman15.tlog/CL.write.1.tlog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/request_handler.new.obj.enc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.idb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/maman15/x64/Debug/vc143.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/me.info" beforeDir="false" afterPath="$PROJECT_DIR$/me.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/priv.key" beforeDir="false" afterPath="$PROJECT_DIR$/priv.key" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/cksum.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/cksum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/client_session.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/client_session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/crypto_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/crypto_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/protocol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/request_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/request_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transfer.info" beforeDir="false" afterPath="$PROJECT_DIR$/transfer.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +70,9 @@
     &quot;accountId&quot;: &quot;87f3b315-ea34-4e2f-b9ac-a95239e7876c&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -63,6 +88,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
@@ -109,8 +135,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
-        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23726.102" />
+        <option value="bundled-python-sdk-5e1850174b45-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23726.102" />
       </set>
     </attachedChunks>
   </component>
@@ -141,7 +167,15 @@
       <workItem from="1729449344849" duration="3707000" />
       <workItem from="1729491565730" duration="30212000" />
       <workItem from="1729586789977" duration="19123000" />
-      <workItem from="1729666256065" duration="7133000" />
+      <workItem from="1729666256065" duration="19064000" />
+      <workItem from="1729790557481" duration="8868000" />
+      <workItem from="1729843363118" duration="10759000" />
+      <workItem from="1729967022226" duration="176000" />
+      <workItem from="1729967243961" duration="177000" />
+      <workItem from="1729967431273" duration="372000" />
+      <workItem from="1729967925153" duration="791000" />
+      <workItem from="1729969138136" duration="7166000" />
+      <workItem from="1730015016733" duration="9614000" />
     </task>
     <servers />
   </component>
@@ -152,39 +186,64 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
-          <line>21</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>15</line>
+          <line>18</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>19</line>
+          <line>26</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/server.py</url>
-          <line>38</line>
+          <line>48</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/client_session.py</url>
-          <line>20</line>
+          <line>36</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/server/client_session.py</url>
-          <line>11</line>
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>58</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/server/request_handler.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="22" />
+          <line>75</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/crypto_utils.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>71</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/request_handler.py</url>
+          <line>115</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/crypto_utils.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="57" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -196,6 +255,6 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1729629923652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/maman15$server.coverage" NAME="server Coverage Results" MODIFIED="1730035690908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
   </component>
 </project>

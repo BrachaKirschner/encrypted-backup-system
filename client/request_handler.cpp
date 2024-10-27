@@ -67,11 +67,14 @@ void RequestHandler::login()
         std::string rsa_key = read_rsa_key();
         aes_key = response.read_from_payload(AES_KEY_OFFSET, response.payload_size - AES_KEY_OFFSET);
         RSAPrivateWrapper rsa_private_wrapper = RSAPrivateWrapper(rsa_key);
-        rsa_private_wrapper.decrypt(aes_key);
+        aes_key = rsa_private_wrapper.decrypt(aes_key);
     }
     if (response.code == LOGIN_FAILED)
     {
+		std::filesystem::remove("me.info");
+		std::filesystem::remove("priv.key");
         register_user();
+        exchange_keys();
     }
     if (response.code == GENERAL_ERROR)
     {
@@ -116,37 +119,33 @@ void RequestHandler::backup_file()
     }
 
     //computing the original file checksum
-    std::string cksum_string = readfile(file_path);
+    std::string cksum_string = compute_file_crc(file_path);
     unsigned long int cksum = std::stoul(cksum_string.substr(0, cksum_string.find('\t')));
 
-    size_t encrypted_file_size = 0, original_file_size = 0;
+	// encrypting the file
+	AESWrapper aes_wrapper = AESWrapper(reinterpret_cast<const unsigned char*>(aes_key.c_str()), AES_KEY_SIZE);
+    std::string encrypted_filename = aes_wrapper.encrypt_file(file_path);
+	original_file.close(); // closing the original file
 
-	// encrypting the file in chunks
-    AESWrapper aes_wrapper = AESWrapper(reinterpret_cast<const unsigned char*>(aes_key.c_str()), AES_KEY_SIZE);
-    std::fstream encrypted_file(filename + ".enc", std::ios::in | std::ios::out | std::ios::binary | std::ios::trunc);
+	// opening the encrypted file
+	std::ifstream encrypted_file(encrypted_filename, std::ios::binary);
+	if (!encrypted_file.is_open())
+	{
+		throw std::runtime_error("File not found");
+	}
 
-    while (!original_file.eof())
-    {
-        // reading chunk of the file and encrypting it
-        char buffer[PACKET_SIZE];
-        original_file.read(buffer, PACKET_SIZE);
-		size_t gcount = original_file.gcount();
-        std::string encrypted_content = aes_wrapper.encrypt(buffer, gcount);
-        encrypted_file.write(encrypted_content.c_str(), encrypted_content.size());
+	// getting the file sizes
+	std::filesystem::path original_file_path(file_path);
+	size_t original_file_size = std::filesystem::file_size(original_file_path);
+	std::filesystem::path encrypted_file_path(encrypted_filename);
+	size_t encrypted_file_size = std::filesystem::file_size(encrypted_file_path);
 
-        // updating the sizes
-        original_file_size += gcount;
-        encrypted_file_size += encrypted_content.size();
-    }
 
     // The client will try to send the file until it receives a correct CRC from the server or until it reaches the maximum number of attempts
-    // The file will be sent in packets of and client will only wait for the last packet to be acknowledged
-    size_t num_of_attempts = 0;
-    do
+	// The file will be sent in packets and client will only wait for the last packet to be acknowledged by the server
+	for (size_t i = 0; i <= NUM_OF_TRIES; i++)
     {
-        encrypted_file.seekg(0, std::ios::beg); // Move the get pointer back to the beginning of the file
-        
-        // preparing the file request
+		// packet preparation
         size_t packet_number = 1, total_packets = encrypted_file_size / PACKET_SIZE;
 		if (encrypted_file_size % PACKET_SIZE != 0) // if the last packet is not full
         {
@@ -159,7 +158,7 @@ void RequestHandler::backup_file()
             encrypted_file.read(buffer, PACKET_SIZE);
 
 			std::string buffer_string = std::string(buffer, encrypted_file.gcount());
-            
+
             // preparing the file request
             Request_t file_request;
             file_request.assign_client_id(client_id);
@@ -174,13 +173,17 @@ void RequestHandler::backup_file()
             // sending the final packet
             if(packet_number == total_packets)
             {
-                remove((filename + ".enc").c_str()); // remove the encrypted file
+				// getting rid of the encrypted file
+				encrypted_file.close();
+				std::filesystem::remove(encrypted_filename);
+
                 Response_t response = connection_handler.exchange_messages(file_request);
                 if(response.code == FILE_RECEIVED)
                 {
-                    int response_cksum = std::stoi(response.read_from_payload(CKSUM_OFFSET, CKSUM_SIZE));
+                    unsigned long int response_cksum = std::stoul(response.read_from_payload(CKSUM_OFFSET, CKSUM_SIZE));
                     if(cksum == response_cksum)
                     {
+						// preparing the CRC correct request
                         Request_t crc_request;
                         crc_request.assign_client_id(client_id);
                         crc_request.code = CORRECT_CRC;
@@ -188,7 +191,8 @@ void RequestHandler::backup_file()
                         Response_t crc_response = connection_handler.exchange_messages(crc_request);
                         if(crc_response.code == MESSAGE_RECEIVED)
                         {
-                            std::cout << "File backed up successfully" << std::endl;
+                            std::cout << "File " << filename << " backed up successfully" << std::endl;
+							return;
                         }
                     }
                     else
@@ -207,16 +211,14 @@ void RequestHandler::backup_file()
                 packet_number++;
             }
         }
-    } while (++num_of_attempts == NUM_OF_TRIES);
-
-    // if the client reaches the maximum number of attempts, it will send a request to the server to inform it that the file will not be sent
-    if(num_of_attempts == NUM_OF_TRIES)
-    {
-        Request_t crc_request;
-        crc_request.assign_client_id(client_id);
-        crc_request.code = FOURTH_INCORRECT_CRC;
-        crc_request.append_to_payload(filename, FILE_NAME_SIZE);
-        Response_t crc_response = connection_handler.exchange_messages(crc_request);
-        throw std::runtime_error("incorrect crc for the fourth time - file not backed up");
     }
+
+	// If the client failed to send the file after the maximum number of attempts, that is, it didn't return yet, 
+	// it will send a request to the server to inform it that the file could not be backed up, and then it will throw an exception
+    Request_t crc_request;
+    crc_request.assign_client_id(client_id);
+    crc_request.code = FOURTH_INCORRECT_CRC;
+    crc_request.append_to_payload(filename, FILE_NAME_SIZE);
+    Response_t crc_response = connection_handler.exchange_messages(crc_request);
+    throw std::runtime_error("incorrect crc for the fourth time - file not backed up");
 }

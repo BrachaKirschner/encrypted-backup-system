@@ -83,7 +83,7 @@ def memcrc(b):
         s = UNSIGNED(s << 8) ^ crctab[(s >> 24) ^ c]
     return UNSIGNED(~s)
 
-def readfile(fname):
+def compute_file_crc(fname):
     """
     Read a file and calculate its CRC checksum and length.
 

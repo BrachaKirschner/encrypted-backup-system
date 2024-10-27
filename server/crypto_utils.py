@@ -4,34 +4,39 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import unpad
 
-CHUNK_SIZE = 1024 # 1 KB
-
 def generate_aes_key():
+    """
+    The function generates a random AES key
+    :return: The generated AES key
+    """
     return get_random_bytes(32) # Creating an AES-CBC key of length 256 bit
 
 def encrypt_with_rsa(rsa_key, data):
+    """
+    The function encrypts the data using the RSA public key
+    :param rsa_key: The RSA public key
+    :param data: The data to encrypt
+    :return: The encrypted data
+    """
     rsa = RSA.import_key(rsa_key) # Import the client's RSA public key
     cipher_rsa = PKCS1_OAEP.new(rsa) # Create a cipher using the RSA public key
     encrypted_aes_key = cipher_rsa.encrypt(data)
     return encrypted_aes_key
 
-def decrypt_file_with_aes(file_name, client_uuid, encrypted_file_name, aes_key):
-    if not os.path.exists('backupsvr/'):
-        os.makedirs('backupsvr/')
-    if not os.path.exists(f'backupsvr/{client_uuid}'):
-        os.makedirs(f'backupsvr/{client_uuid}')
+def decrypt_file_with_aes(encrypted_file_path, decrypted_file_path, aes_key):
+    """
+    The function decrypts the file using the AES key and writes the decrypted data to a new file
+    :param encrypted_file_path: The path to the encrypted file
+    :param decrypted_file_path: The path to the decrypted file to write
+    :param aes_key: The AES key to decrypt the file
+    """
 
-    cipher = AES.new(aes_key, AES.MODE_CBC, b'\x00' * 16)
-    with open(f'backupsvr/{client_uuid}/{file_name}', 'wb') as file, open(encrypted_file_name, 'rb') as encrypted_file:
-        while chunk := encrypted_file.read(CHUNK_SIZE): # Read in chunks
-            decrypted_chunk = cipher.decrypt(chunk)
-            file.write(decrypted_chunk)
+    if os.path.exists(decrypted_file_path):
+        os.remove(decrypted_file_path)
 
-    # Remove padding from the last chunk
-    with open(f'backupsvr/{client_uuid}/{file_name}', 'rb+') as file:
-        file.seek(-CHUNK_SIZE, os.SEEK_END)
-        last_chunk = file.read(CHUNK_SIZE)
-        unpadded_chunk = unpad(last_chunk, AES.block_size)
-        file.seek(-CHUNK_SIZE, os.SEEK_END)
-        file.write(unpadded_chunk)
-        file.truncate()
+    with open(decrypted_file_path, 'wb') as decrypted_file, open(encrypted_file_path, 'rb') as encrypted_file:
+        buffer = encrypted_file.read()
+        cipher = AES.new(aes_key, AES.MODE_CBC, b'\x00' * AES.block_size)
+        decrypted_data = cipher.decrypt(buffer)
+        decrypted_data = unpad(decrypted_data, AES.block_size)
+        decrypted_file.write(decrypted_data)

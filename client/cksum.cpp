@@ -467,7 +467,7 @@ unsigned long memcrc(char * b, size_t n)
 
 }
 
-std::string readfile(std::string fname)
+std::string compute_file_crc(std::string fname)
 {
     if (std::filesystem::exists(fname)) 
     {

@@ -3,15 +3,40 @@
 
 #include "connection_handler.h"
 
+/**
+ * Class to handle the user requests.
+ */
 class RequestHandler
 {
 public:
+	/**
+	 * Constructor.
+	 */
     RequestHandler();
+
+	/**
+	 * Destructor.
+	 */
     ~RequestHandler();
 
+	/**
+	 * Handle the user login.
+	 */
     void login();
+
+	/**
+	 * Handle the user registration.
+     */
     void register_user();
+
+    /**
+	 * Handle the exchange keys request.
+     */
     void exchange_keys();
+
+	/**
+	 * Handle the file backup.
+     */
     void backup_file();
 private:
     ConnectionHandler connection_handler;

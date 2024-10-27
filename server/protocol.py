@@ -1,7 +1,16 @@
 import enum
 
-# Request class and related enums
 class Request:
+    """
+    Request class
+
+    Attributes:
+    client_id: The client ID
+    version: The version of the protocol
+    opcode: The operation code
+    payload_size: The size of the payload
+    payload: The payload
+    """
     def __init__(self, client_id, version, opcode, payload_size, payload):
         self.client_id = client_id
         self.version = version
@@ -9,16 +18,24 @@ class Request:
         self.payload_size = payload_size
         self.payload = payload
 
-# Response class and related enums
 class Response:
+    """
+    Response class
+
+    Attributes:
+    version: The version of the protocol
+    opcode: The operation code
+    payload_size: The size of the payload
+    payload: The payload
+    """
     def __init__(self, opcode, payload_size, payload):
         self.version = 3
         self.opcode = opcode
         self.payload_size = payload_size
         self.payload = payload
 
-# Enums for codes and sizes used by both Request and Response
 class Size(enum.Enum):
+    """The size of various fields in the protocol"""
     CLIENT_ID_SIZE = 16
     VERSION_SIZE = 1
     CODE_SIZE = 2
@@ -33,6 +50,7 @@ class Size(enum.Enum):
     CHECKSUM_SIZE = 4
 
 class Offset(enum.Enum):
+    """The offset of various fields in the payload"""
     NAME_OFFSET = 0
     FILE_NAME_OFFSET = 0
     CONTENT_SIZE_OFFSET = 0
@@ -44,6 +62,7 @@ class Offset(enum.Enum):
     MESSAGE_CONTENT_OFFSET = Size.CONTENT_LENGTH_SIZE.value + Size.ORIGINAL_FILE_LENGTH_SIZE.value + Size.PACKET_NUMBER_SIZE.value + Size.TOTAL_PACKETS_SIZE.value + Size.FILE_NAME_SIZE.value
 
 class Code(enum.Enum):
+    """The operation codes"""
     REGISTRATION_SUCCESSFUL = 1600
     REGISTRATION_FAILED = 1601
     AES_KEY_EXCHANGE = 1602
