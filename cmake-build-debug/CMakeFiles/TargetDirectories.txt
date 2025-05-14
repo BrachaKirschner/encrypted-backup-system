@@ -1,3 +1,0 @@
-C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Assignments/maman15/cmake-build-debug/CMakeFiles/maman15.dir
-C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Assignments/maman15/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/brach/OneDrive/Documents/OneDrive - Open University of Israel/Desktop/Open U/Programming Defensive Systems/Assignments/maman15/cmake-build-debug/CMakeFiles/rebuild_cache.dir
