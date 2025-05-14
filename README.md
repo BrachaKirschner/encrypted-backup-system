@@ -50,3 +50,8 @@ The demo video is available [here](https://youtu.be/fK1mC_cp8Zc).
 - Developed in PyCharm 2024.2.1
 - Written in Python 3.12
 - No external libraries are required.
+
+---
+**Author:** Bracha Kirschner  
+**Course:** Programming Defensive Systems (20937)  
+**Institution:** Open University of Israel
